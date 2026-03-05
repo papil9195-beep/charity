@@ -30,6 +30,8 @@ html, body{
   width:100%;
   max-width:100%;
   overflow-x:hidden;
+  overscroll-behavior-x: none;
+  touch-action: pan-y;
 }
 html{ scroll-behavior: smooth; }
 body{
@@ -39,13 +41,13 @@ body{
               radial-gradient(900px 520px at 100% 0%, rgba(45,212,191,0.18), transparent 55%),
               var(--bg);
   color: var(--text);
-  overflow-x: clip;
+  overflow-x: hidden;
 }
 #root{
   min-height: 100%;
   width: 100%;
   max-width: 100%;
-  overflow-x: clip;
+  overflow-x: hidden;
 }
 
 button, input, textarea, select{
@@ -59,9 +61,20 @@ img, svg, video{
 
 a{ color: inherit; text-decoration:none; }
 a:hover{ text-decoration: underline; }
-.container{ width:min(var(--max), calc(100% - clamp(20px, 4vw, 40px))); margin:0 auto; }
+.container{
+  width:min(var(--max), calc(100% - clamp(20px, 4vw, 40px)));
+  margin:0 auto;
+  max-width: 100%;
+  min-width: 0;
+}
 
-.appShell{ min-height:100%; display:flex; flex-direction:column; }
+.appShell{
+  min-height:100%;
+  display:flex;
+  flex-direction:column;
+  max-width: 100%;
+  overflow-x: hidden;
+}
 
 .skipLink{
   position: absolute;
@@ -87,6 +100,8 @@ a:hover{ text-decoration: underline; }
   border-bottom: 1px solid var(--stroke);
   z-index: 10;
   box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+  max-width: 100%;
+  overflow-x: hidden;
 }
 
 .headerRow{
@@ -133,6 +148,7 @@ a:hover{ text-decoration: underline; }
   justify-content:flex-end;
   flex: 0 0 auto;
   min-width: 0;
+  flex-wrap: wrap;
 }
 .desktopOnly{ display:inline-flex !important; }
 .mobileOnly{ display:none !important; }
@@ -148,6 +164,8 @@ a:hover{ text-decoration: underline; }
 .nav{
   border-top: 1px solid var(--stroke);
   background: color-mix(in oklab, var(--bg) 82%, transparent);
+  max-width: 100%;
+  overflow-x: hidden;
 }
 .navInner{ padding: 0; }
 .navRow{
@@ -179,6 +197,8 @@ a:hover{ text-decoration: underline; }
 .main{
   flex: 1;
   min-width: 0;
+  max-width: 100%;
+  overflow-x: hidden;
 }
 
 .section{ padding: clamp(28px, 4vw, 40px) 0; }

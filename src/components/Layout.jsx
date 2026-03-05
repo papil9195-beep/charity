@@ -19,6 +19,23 @@ export default function Layout() {
     setMobileNavOpen(false)
   }, [location.pathname])
 
+  React.useEffect(() => {
+    function clampHorizontalScroll() {
+      if (window.scrollX !== 0) {
+        window.scrollTo(0, window.scrollY)
+      }
+    }
+
+    clampHorizontalScroll()
+    window.addEventListener('scroll', clampHorizontalScroll, { passive: true })
+    window.addEventListener('resize', clampHorizontalScroll, { passive: true })
+
+    return () => {
+      window.removeEventListener('scroll', clampHorizontalScroll)
+      window.removeEventListener('resize', clampHorizontalScroll)
+    }
+  }, [])
+
   return (
     <div className="appShell">
       <a className="skipLink" href="#main-content">Skip to main content</a>
