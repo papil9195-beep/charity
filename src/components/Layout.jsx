@@ -6,22 +6,24 @@ const navItems = [
   { to: '/', label: 'Home', mobileLabel: 'Home' },
   { to: '/how-support-works', label: 'How Support Works', mobileLabel: 'Support' },
   { to: '/rights-consent', label: 'Rights & Consent', mobileLabel: 'Rights' },
-  { to: '/red-flags', label: 'Red Flags', mobileLabel: 'Warnings' },
+  { to: '/red-flags', label: 'Red Flags', mobileLabel: 'Red Flags' },
   { to: '/faq', label: 'FAQ', mobileLabel: 'FAQ' },
   { to: '/contact', label: 'Enroll', mobileLabel: 'Enroll' },
 ]
 
 export default function Layout() {
   const location = useLocation()
-  const [isNavOpen, setIsNavOpen] = React.useState(false)
+  const [mobileNavOpen, setMobileNavOpen] = React.useState(false)
 
   React.useEffect(() => {
-    setIsNavOpen(false)
+    setMobileNavOpen(false)
   }, [location.pathname])
 
   return (
     <div className="appShell">
-      <header className="header">
+      <a className="skipLink" href="#main-content">Skip to main content</a>
+
+      <header className="header" data-nav-open={mobileNavOpen ? 'true' : 'false'}>
         <div className="container headerRow">
           <Link className="brand" to="/" aria-label="Samaritan's Act home">
             <img className="brandMark" src="/brand-mark.svg" alt="" aria-hidden="true" />
@@ -32,29 +34,28 @@ export default function Layout() {
           </Link>
 
           <div className="headerActions">
-            <ThemeToggle className="desktopOnly" />
+            <ThemeToggle />
             <Link className="btn btnPrimary desktopOnly" to="/contact">Start Enrollment</Link>
             <button
               type="button"
-              className="btn btnGhost menuToggle"
-              onClick={() => setIsNavOpen((open) => !open)}
-              aria-expanded={isNavOpen}
-              aria-controls="site-nav"
+              className="btn btnGhost menuToggle mobileOnly"
+              aria-expanded={mobileNavOpen}
+              aria-controls="primary-navigation"
+              onClick={() => setMobileNavOpen((open) => !open)}
             >
-              {isNavOpen ? 'Close' : 'Menu'}
+              {mobileNavOpen ? 'Close' : 'Menu'}
             </button>
           </div>
         </div>
 
-        <nav id="site-nav" className={'nav' + (isNavOpen ? ' isOpen' : '')}>
-          <div className="container navInner">
-            <div className="mobileQuickActions mobileOnly">
-              <Link className="btn btnPrimary navAction" to="/contact" onClick={() => setIsNavOpen(false)}>
-                Start Enrollment
-              </Link>
-              <ThemeToggle className="navAction" />
-            </div>
+        <div className="container mobileQuickActions">
+          <Link className="btn btnPrimary" to="/contact" onClick={() => setMobileNavOpen(false)}>
+            Start Enrollment
+          </Link>
+        </div>
 
+        <nav id="primary-navigation" className="nav" aria-label="Primary navigation">
+          <div className="container navInner">
             <div className="navRow">
               {navItems.map((item) => (
                 <NavLink
@@ -62,7 +63,7 @@ export default function Layout() {
                   to={item.to}
                   className={({ isActive }) => 'navLink' + (isActive ? ' active' : '')}
                   end={item.to === '/'}
-                  onClick={() => setIsNavOpen(false)}
+                  onClick={() => setMobileNavOpen(false)}
                 >
                   <span className="navLabelDesktop">{item.label}</span>
                   <span className="navLabelMobile">{item.mobileLabel}</span>
@@ -73,7 +74,7 @@ export default function Layout() {
         </nav>
       </header>
 
-      <main className="main">
+      <main id="main-content" className="main">
         <Outlet />
       </main>
 
