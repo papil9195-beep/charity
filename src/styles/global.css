@@ -25,7 +25,12 @@
 }
 
 *{ box-sizing:border-box; }
-html,body{ height:100%; }
+html, body{
+  height:100%;
+  width:100%;
+  max-width:100%;
+  overflow-x:hidden;
+}
 html{ scroll-behavior: smooth; }
 body{
   margin:0;
@@ -34,7 +39,13 @@ body{
               radial-gradient(900px 520px at 100% 0%, rgba(45,212,191,0.18), transparent 55%),
               var(--bg);
   color: var(--text);
-  overflow-x: hidden;
+  overflow-x: clip;
+}
+#root{
+  min-height: 100%;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: clip;
 }
 
 button, input, textarea, select{
@@ -84,9 +95,16 @@ a:hover{ text-decoration: underline; }
   justify-content:space-between;
   padding: clamp(12px, 2vw, 16px) 0;
   gap: 16px;
+  min-width: 0;
 }
 
-.brand{ display:flex; align-items:center; gap:12px; min-width:0; }
+.brand{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  min-width:0;
+  flex: 1 1 auto;
+}
 .brandMark{
   width:52px;
   height:52px;
@@ -98,10 +116,24 @@ a:hover{ text-decoration: underline; }
 .brandMark.small{ width:42px; height:42px; border-radius: 14px; }
 
 .brandText{ display:flex; flex-direction:column; line-height:1.05; min-width:0; }
-.brandName{ font-weight: 800; letter-spacing:0.2px; font-size: clamp(15px, 1.6vw, 16px); }
+.brandName{
+  font-weight: 800;
+  letter-spacing:0.2px;
+  font-size: clamp(15px, 1.6vw, 16px);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 .brandTag{ font-size: 12px; color: var(--muted); margin-top: 3px; }
 
-.headerActions{ display:flex; gap:10px; align-items:center; justify-content:flex-end; flex-shrink:0; }
+.headerActions{
+  display:flex;
+  gap:10px;
+  align-items:center;
+  justify-content:flex-end;
+  flex: 0 0 auto;
+  min-width: 0;
+}
 .desktopOnly{ display:inline-flex !important; }
 .mobileOnly{ display:none !important; }
 .mobileQuickActions{
@@ -686,7 +718,18 @@ a:hover{ text-decoration: underline; }
 @media (max-width: 760px){
   .headerRow{
     align-items:center;
-    gap: 10px;
+    gap: 8px;
+  }
+  .brandTag{
+    display:none;
+  }
+  .brandMark{
+    width:44px;
+    height:44px;
+    border-radius: 14px;
+  }
+  .brandName{
+    font-size: 14px;
   }
   .headerActions{
     margin-left:auto;
@@ -701,13 +744,14 @@ a:hover{ text-decoration: underline; }
   .menuToggle{
     display: inline-flex !important;
     justify-content: center;
-    min-width: 74px;
+    min-width: 62px;
   }
   .mobileQuickActions{
     display: flex;
   }
   .headerActions .btn{
     min-height: 42px;
+    padding: 8px 10px;
   }
   .nav{
     display:none;
@@ -764,11 +808,25 @@ a:hover{ text-decoration: underline; }
   }
 }
 
+@media (max-width: 560px){
+  .headerRow{
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .brand{
+    width: 100%;
+  }
+  .headerActions{
+    width: 100%;
+    justify-content: center;
+    margin-left: 0;
+  }
+}
+
 @media (max-width: 520px){
   .container{ width:min(var(--max), calc(100% - 20px)); }
   .header{ backdrop-filter: blur(14px); }
-  .brandMark{ width:46px; height:46px; border-radius: 14px; }
-  .brandTag{ display:none; }
+  .brandMark{ width:42px; height:42px; border-radius: 14px; }
   .mobileQuickActions{
     padding: 0 0 10px;
   }
@@ -802,22 +860,6 @@ a:hover{ text-decoration: underline; }
 @media (max-width: 420px){
   .container{
     width:min(var(--max), calc(100% - 16px));
-  }
-  .headerRow{
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 8px;
-  }
-  .brand{
-    width: 100%;
-    justify-content: center;
-  }
-  .headerActions{
-    width: 100%;
-    justify-content: center;
-  }
-  .headerActions .btn{
-    flex: 1;
   }
   .mobileQuickActions{
     padding-bottom: 8px;
