@@ -557,8 +557,16 @@ a:hover{ text-decoration: underline; }
   font-weight: 700;
 }
 .optionCard input,
-.assistOption input{
+.assistOption input,
+.checkRow input{
+  width: 22px;
+  height: 22px;
+  min-width: 22px;
+  min-height: 22px;
+  margin-top: 1px;
+  flex-shrink: 0;
   accent-color: var(--brand);
+  cursor: pointer;
 }
 .assistBox{
   margin-top: 2px;
@@ -592,7 +600,7 @@ a:hover{ text-decoration: underline; }
 }
 .checkRow{
   display:flex;
-  gap: 10px;
+  gap: 12px;
   align-items:flex-start;
   color: var(--muted);
   font-weight: 600;
@@ -603,11 +611,11 @@ a:hover{ text-decoration: underline; }
   flex-direction:column;
   gap: 12px;
 }
-.checkRow input{
-  width: 18px;
-  height: 18px;
-  margin-top: 2px;
-  accent-color: var(--brand);
+.optionCard input:focus-visible,
+.assistOption input:focus-visible,
+.checkRow input:focus-visible{
+  outline: 2px solid color-mix(in oklab, var(--brand) 60%, white 40%);
+  outline-offset: 2px;
 }
 .selectInput{
   cursor: pointer;
@@ -840,6 +848,14 @@ a:hover{ text-decoration: underline; }
   .headerActions .btn{
     min-height: 42px;
     padding: 10px 10px;
+  }
+  .optionCard input,
+  .assistOption input,
+  .checkRow input{
+    width: 24px;
+    height: 24px;
+    min-width: 24px;
+    min-height: 24px;
   }
   .input, .textarea{
     font-size: 16px;
