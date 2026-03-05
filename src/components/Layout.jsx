@@ -3,12 +3,12 @@ import { Outlet, NavLink, Link, useLocation } from 'react-router-dom'
 import Footer from './Footer.jsx'
 
 const navItems = [
-  { to: '/', label: 'Home', mobileLabel: 'Home' },
-  { to: '/how-support-works', label: 'How Support Works', mobileLabel: 'Support' },
-  { to: '/rights-consent', label: 'Rights & Consent', mobileLabel: 'Rights' },
-  { to: '/red-flags', label: 'Red Flags', mobileLabel: 'Red Flags' },
-  { to: '/faq', label: 'FAQ', mobileLabel: 'FAQ' },
-  { to: '/contact', label: 'Enroll', mobileLabel: 'Enroll' },
+  { to: '/', label: 'Home' },
+  { to: '/how-support-works', label: 'How Support Works' },
+  { to: '/rights-consent', label: 'Rights & Consent' },
+  { to: '/red-flags', label: 'Red Flags' },
+  { to: '/faq', label: 'FAQ' },
+  { to: '/contact', label: 'Enroll' },
 ]
 
 export default function Layout() {
@@ -51,11 +51,9 @@ export default function Layout() {
           </Link>
 
           <div className="headerActions">
-            <ThemeToggle />
-            <Link className="btn btnPrimary desktopOnly" to="/contact">Start Enrollment</Link>
             <button
               type="button"
-              className="btn btnGhost menuToggle mobileOnly"
+              className="btn btnGhost menuToggle"
               aria-expanded={mobileNavOpen}
               aria-controls="primary-navigation"
               onClick={() => setMobileNavOpen((open) => !open)}
@@ -65,27 +63,29 @@ export default function Layout() {
           </div>
         </div>
 
-        <div className="container mobileQuickActions">
-          <Link className="btn btnPrimary" to="/contact" onClick={() => setMobileNavOpen(false)}>
-            Start Enrollment
-          </Link>
-        </div>
-
         <nav id="primary-navigation" className="nav" aria-label="Primary navigation">
           <div className="container navInner">
-            <div className="navRow">
-              {navItems.map((item) => (
-                <NavLink
-                  key={item.to}
-                  to={item.to}
-                  className={({ isActive }) => 'navLink' + (isActive ? ' active' : '')}
-                  end={item.to === '/'}
-                  onClick={() => setMobileNavOpen(false)}
-                >
-                  <span className="navLabelDesktop">{item.label}</span>
-                  <span className="navLabelMobile">{item.mobileLabel}</span>
-                </NavLink>
-              ))}
+            <div className="menuPanel">
+              <div className="menuTopRow">
+                <ThemeToggle className="menuThemeBtn" />
+                <Link className="btn btnPrimary menuEnrollBtn" to="/contact" onClick={() => setMobileNavOpen(false)}>
+                  Start Enrollment
+                </Link>
+              </div>
+
+              <div className="navRow">
+                {navItems.map((item) => (
+                  <NavLink
+                    key={item.to}
+                    to={item.to}
+                    className={({ isActive }) => 'navLink' + (isActive ? ' active' : '')}
+                    end={item.to === '/'}
+                    onClick={() => setMobileNavOpen(false)}
+                  >
+                    {item.label}
+                  </NavLink>
+                ))}
+              </div>
             </div>
           </div>
         </nav>
