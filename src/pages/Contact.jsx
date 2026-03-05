@@ -21,7 +21,19 @@ import {
   sanitizeFieldValue,
 } from './contactFormUtils.js'
 
-const apiBaseUrl = (import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000').replace(/\/$/, '')
+function resolveApiBaseUrl() {
+  const configuredBaseUrl = (import.meta.env.VITE_API_BASE_URL || '').trim().replace(/\/$/, '')
+  if (configuredBaseUrl) return configuredBaseUrl
+
+  if (typeof window !== 'undefined' && /^(localhost|127\.0\.0\.1)$/i.test(window.location.hostname)) {
+    return 'http://localhost:5000'
+  }
+
+  return ''
+}
+
+const apiBaseUrl = resolveApiBaseUrl()
+const enrollmentEndpoint = apiBaseUrl ? `${apiBaseUrl}/api/enrollments` : '/api/enrollments'
 const topLevelUploadFields = [
   'educationInvoiceUploaded',
   'foodIncomeProofUploaded',
@@ -392,19 +404,27 @@ export default function Contact() {
         }
       }
 
-      const response = await fetch(`${apiBaseUrl}/api/enrollments`, {
+      const response = await fetch(enrollmentEndpoint, {
         method: 'POST',
         body: formData,
       })
 
-      const result = await response.json().catch(() => null)
+      const contentType = response.headers.get('content-type') || ''
+      const result = contentType.includes('application/json') ? await response.json().catch(() => null) : null
       if (!response.ok) {
         throw new Error(result?.error || 'Unable to submit enrollment right now.')
+      }
+      if (!result || typeof result.id !== 'string') {
+        throw new Error('Enrollment service returned an unexpected response. Please try again shortly.')
       }
 
       setSent(true)
     } catch (error) {
-      setSubmitError(error.message || 'Unable to submit enrollment right now.')
+      const isNetworkError = error?.name === 'TypeError' && /fetch/i.test(String(error?.message || ''))
+      const message = isNetworkError
+        ? 'Unable to reach the enrollment service right now. Please try again shortly.'
+        : (error?.message || 'Unable to submit enrollment right now.')
+      setSubmitError(message)
     } finally {
       setIsSubmitting(false)
     }
