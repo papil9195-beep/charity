@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-labelledby="title desc">
+  <title id="title">Samaritan's Act brand mark</title>
+  <desc id="desc">A navy cross above a heart supported by two hands on a warm cream background.</desc>
+  <rect width="128" height="128" rx="28" fill="#F2E8D8"/>
+  <g fill="#123F6B">
+    <rect x="54" y="10" width="20" height="34" rx="4"/>
+    <rect x="28" y="28" width="72" height="20" rx="4"/>
+    <path d="M64 59c-4-8-18-11-27-1c-9 9-6 24 4 33c5 5 14 12 23 21c9-9 18-16 23-21c10-9 13-24 4-33c-9-10-23-7-27 1z"/>
+    <path d="M22 88c2-12 10-20 24-24c4-1 8 1 11 4l4 4c-8 5-13 12-16 20c-2 6-3 11-3 18H26c-2 0-4-2-4-4V88z"/>
+    <path d="M106 88c-2-12-10-20-24-24c-4-1-8 1-11 4l-4 4c8 5 13 12 16 20c2 6 3 11 3 18h16c2 0 4-2 4-4V88z"/>
+  </g>
+  <g fill="none" stroke="#123F6B" stroke-linecap="round" stroke-width="5">
+    <path d="M23 78c4 10 11 18 21 24"/>
+    <path d="M30 72c4 9 10 17 18 22"/>
+    <path d="M105 78c-4 10-11 18-21 24"/>
+    <path d="M98 72c-4 9-10 17-18 22"/>
+  </g>
+</svg>
