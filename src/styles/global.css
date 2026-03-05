@@ -41,6 +41,10 @@ button, input, textarea, select{
   font: inherit;
   min-width: 0;
 }
+img, svg, video{
+  max-width: 100%;
+  height: auto;
+}
 
 a{ color: inherit; text-decoration:none; }
 a:hover{ text-decoration: underline; }
@@ -140,7 +144,10 @@ a:hover{ text-decoration: underline; }
 .navLabelDesktop{ display:inline; }
 .navLabelMobile{ display:none; }
 
-.main{ flex: 1; }
+.main{
+  flex: 1;
+  min-width: 0;
+}
 
 .section{ padding: clamp(28px, 4vw, 40px) 0; }
 .heroSection{ padding-top: clamp(18px, 3vw, 28px); }
@@ -148,7 +155,9 @@ a:hover{ text-decoration: underline; }
 .h1{ font-size: clamp(28px, 4vw, 38px); margin: 0 0 8px; letter-spacing:-0.4px; line-height: 1.12; }
 .h2{ font-size: clamp(22px, 3vw, 28px); margin: 0 0 8px; letter-spacing:-0.2px; line-height: 1.18; }
 .muted{ color: var(--muted); line-height: 1.65; }
-.muted, .fieldHint, .fieldError, .cardTitle, .calloutTitle, .footerNote{ overflow-wrap:anywhere; }
+.muted, .fieldHint, .fieldError, .cardTitle, .calloutTitle, .footerNote, .formSectionTitle, .subSectionTitle, .subSectionLabel{
+  overflow-wrap:anywhere;
+}
 .pageHeader{ margin-bottom: clamp(16px, 3vw, 24px); }
 
 .heroCard{
@@ -541,6 +550,7 @@ a:hover{ text-decoration: underline; }
 .form{ display:flex; flex-direction:column; gap: 12px; }
 .label{ display:flex; flex-direction:column; gap:6px; font-weight: 700; }
 .input, .textarea{
+  width: 100%;
   border-radius: 14px;
   border: 1px solid var(--stroke);
   background: color-mix(in oklab, var(--bg) 72%, transparent);
@@ -619,9 +629,17 @@ a:hover{ text-decoration: underline; }
 .accPanel{ padding: 0 14px 14px; }
 .accChevron{ font-size: 18px; color: var(--muted); }
 
-@media (max-width: 860px){
+@media (max-width: 980px){
   .enrollHero,
-  .enrollRequestLayout,
+  .enrollRequestLayout{
+    grid-template-columns: 1fr;
+  }
+  .fieldGrid3{
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 860px){
   .fieldGrid,
   .fieldGrid3,
   .uploadGrid,
@@ -632,6 +650,37 @@ a:hover{ text-decoration: underline; }
   .callout{ flex-direction: column; }
   .calloutAction{ margin-left: 0; }
   .footerLinks, .footerMeta{ justify-content:flex-start; }
+}
+
+@media (max-width: 640px){
+  .h1{
+    font-size: clamp(24px, 7.2vw, 30px);
+  }
+  .h2{
+    font-size: clamp(20px, 6.3vw, 26px);
+  }
+  .heroTitle{
+    font-size: clamp(24px, 7vw, 32px);
+  }
+  .enrollStepBar{
+    gap: 6px;
+  }
+  .stepDot{
+    width: 12px;
+    height: 12px;
+  }
+  .optionCard,
+  .assistOption{
+    align-items: flex-start;
+    padding: 10px;
+  }
+  .uploadField{
+    padding: 10px;
+  }
+  .footerMeta{
+    font-size: 12px;
+    gap: 6px;
+  }
 }
 
 @media (max-width: 760px){
@@ -748,4 +797,42 @@ a:hover{ text-decoration: underline; }
   .stat{ padding: 12px; }
   .footerLinks{ grid-template-columns: 1fr; }
   .accBtn{ align-items:flex-start; text-align:left; }
+}
+
+@media (max-width: 420px){
+  .container{
+    width:min(var(--max), calc(100% - 16px));
+  }
+  .headerRow{
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+  }
+  .brand{
+    width: 100%;
+    justify-content: center;
+  }
+  .headerActions{
+    width: 100%;
+    justify-content: center;
+  }
+  .headerActions .btn{
+    flex: 1;
+  }
+  .mobileQuickActions{
+    padding-bottom: 8px;
+  }
+  .heroBadges{
+    gap: 5px;
+  }
+  .badge{
+    font-size: 10px;
+  }
+  .fieldHint,
+  .fieldError{
+    font-size: 11px;
+  }
+  .dot{
+    display: none;
+  }
 }
