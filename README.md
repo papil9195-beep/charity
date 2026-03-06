@@ -46,7 +46,7 @@ npm run api
 npm run dev
 ```
 
-The frontend sends enrollment submissions to `POST /api/enrollments` (default: `http://localhost:5000`).
+The frontend sends enrollment submissions to `POST /api/enrollments`. In local development it falls back to `http://localhost:5000` only when the site is running on your own machine.
 
 Uploaded documents are stored in MongoDB GridFS collections:
 - `<MONGODB_UPLOAD_BUCKET>.files`
@@ -57,6 +57,25 @@ Enrollment documents store upload metadata in `uploadedFiles` inside the `enroll
 With the default bucket, check:
 - `enrollmentUploads.files`
 - `enrollmentUploads.chunks`
+
+## Deploy online
+
+For a public deployment, keep the frontend and the `api/` serverless functions on the same host. This repo is already set up for that flow on Vercel.
+
+1. Import the GitHub repo into Vercel.
+2. Add these production environment variables in the Vercel dashboard:
+   - `SMTP_HOST`
+   - `SMTP_PORT`
+   - `SMTP_SECURE`
+   - `SMTP_USER`
+   - `SMTP_PASS`
+   - `SMTP_FROM`
+   - `NOTIFICATION_RECIPIENTS`
+   - `MAX_UPLOAD_FILE_MB` (optional)
+3. Leave `VITE_API_BASE_URL` empty in production so the website posts to `/api/enrollments` on the live domain instead of `localhost`.
+4. Redeploy after saving the environment variables.
+
+If GitHub is connected to Vercel, every push to `main` will trigger a new deployment automatically.
 
 ## View uploaded images/files in browser
 

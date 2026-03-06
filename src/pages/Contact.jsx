@@ -21,11 +21,21 @@ import {
   sanitizeFieldValue,
 } from './contactFormUtils.js'
 
+const localHostnamePattern = /^(localhost|127\.0\.0\.1)$/i
+const localApiBaseUrlPattern = /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/i
+
 function resolveApiBaseUrl() {
   const configuredBaseUrl = (import.meta.env.VITE_API_BASE_URL || '').trim().replace(/\/$/, '')
-  if (configuredBaseUrl) return configuredBaseUrl
+  const browserIsLocal =
+    typeof window !== 'undefined' && localHostnamePattern.test(window.location.hostname)
 
-  if (typeof window !== 'undefined' && /^(localhost|127\.0\.0\.1)$/i.test(window.location.hostname)) {
+  if (configuredBaseUrl) {
+    if (!(localApiBaseUrlPattern.test(configuredBaseUrl) && !browserIsLocal)) {
+      return configuredBaseUrl
+    }
+  }
+
+  if (browserIsLocal) {
     return 'http://localhost:5000'
   }
 
@@ -414,11 +424,12 @@ export default function Contact() {
 
       const contentType = response.headers.get('content-type') || ''
       const result = contentType.includes('application/json') ? await response.json().catch(() => null) : null
+      const fallbackResponseText = result ? '' : await response.text().catch(() => '')
       if (!response.ok) {
-        throw new Error(result?.error || 'Unable to submit enrollment right now.')
+        throw new Error(result?.error || getSubmissionFailureMessage(response, fallbackResponseText))
       }
       if (!result || typeof result.id !== 'string') {
-        throw new Error('Enrollment service returned an unexpected response. Please try again shortly.')
+        throw new Error(getUnexpectedSubmissionResponseMessage(fallbackResponseText))
       }
 
       setSent(true)
@@ -1135,4 +1146,28 @@ export default function Contact() {
       </div>
     </div>
   )
+}
+
+function getSubmissionFailureMessage(response, responseText) {
+  if (response.status === 404 || response.status === 405 || containsHtmlDocument(responseText)) {
+    return 'The online enrollment API is not configured correctly yet. Update the deployment so /api/enrollments is available on the live site.'
+  }
+
+  if (response.status === 503) {
+    return 'The online enrollment service is missing its email configuration. Add the SMTP and notification environment variables in your hosting dashboard.'
+  }
+
+  return `Unable to submit enrollment right now. Server returned status ${response.status}.`
+}
+
+function getUnexpectedSubmissionResponseMessage(responseText) {
+  if (containsHtmlDocument(responseText)) {
+    return 'The live site returned a web page instead of the enrollment API response. Update the deployment so /api/enrollments points to the serverless function.'
+  }
+
+  return 'Enrollment service returned an unexpected response. Please try again shortly.'
+}
+
+function containsHtmlDocument(value) {
+  return /<!doctype html|<html[\s>]/i.test(String(value || ''))
 }
