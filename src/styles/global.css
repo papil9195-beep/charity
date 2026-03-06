@@ -150,8 +150,37 @@ a:hover{ text-decoration: underline; }
   min-width: 0;
   flex-wrap: nowrap;
 }
-.menuToggle{
+.desktopNav{
+  display:flex;
+  align-items:center;
+  justify-content:flex-end;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.desktopNavLink{
   display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-height: 42px;
+  padding: 10px 12px;
+  border-radius: 999px;
+  color: var(--muted);
+  border: 1px solid transparent;
+  font-weight: 700;
+  text-align: center;
+}
+.desktopNavLink:hover{
+  background: var(--surface);
+  color: var(--text);
+  text-decoration:none;
+}
+.desktopNavLink.active{
+  color: var(--text);
+  background: var(--surface2);
+  border-color: var(--stroke);
+}
+.menuToggle{
+  display:none;
   justify-content:center;
   align-items:center;
   min-width: 74px;
@@ -774,6 +803,9 @@ a:hover{ text-decoration: underline; }
     align-items:center;
     gap: 8px;
   }
+  .desktopNav{
+    display:none;
+  }
   .brandTag{
     display:none;
   }
@@ -790,6 +822,7 @@ a:hover{ text-decoration: underline; }
     gap: 6px;
   }
   .menuToggle{
+    display:inline-flex;
     min-width: 62px;
     padding: 8px 10px;
   }

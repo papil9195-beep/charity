@@ -51,6 +51,19 @@ export default function Layout() {
           </Link>
 
           <div className="headerActions">
+            <div className="desktopNav" aria-label="Desktop navigation">
+              {navItems.map((item) => (
+                <NavLink
+                  key={item.to}
+                  to={item.to}
+                  className={({ isActive }) => 'desktopNavLink' + (isActive ? ' active' : '')}
+                  end={item.to === '/'}
+                >
+                  {item.label}
+                </NavLink>
+              ))}
+            </div>
+
             <button
               type="button"
               className="btn btnGhost menuToggle"
