@@ -211,6 +211,12 @@ export function sanitizeEnrollmentPayload(rawPayload) {
 
 export function validateEnrollmentPayload(payload) {
   const errors = []
+  const hasFoodDocumentUpload = payload.foodIncomeProofUploaded || payload.foodAddressProofUploaded
+  const hasMortgageDocumentUpload =
+    payload.mortgageStatementUploaded ||
+    payload.mortgageDelinquencyNoticeUploaded ||
+    payload.mortgageIncomeProofUploaded
+  const hasIncomeVerificationUpload = countSelected(payload.incomeVerificationDocuments) > 0
 
   if (!isPresent(payload.firstName)) errors.push('firstName is required.')
   if (!isPresent(payload.lastName)) errors.push('lastName is required.')
@@ -250,8 +256,9 @@ export function validateEnrollmentPayload(payload) {
     if (!isPresent(payload.foodAssistanceDuration)) {
       errors.push('foodAssistanceDuration is required for food assistance.')
     }
-    if (!payload.foodIncomeProofUploaded) errors.push('foodIncomeProofUploaded is required for food assistance.')
-    if (!payload.foodAddressProofUploaded) errors.push('foodAddressProofUploaded is required for food assistance.')
+    if (!hasFoodDocumentUpload) {
+      errors.push('At least one food assistance document upload is required for food assistance.')
+    }
     if (!payload.foodDeclaration) errors.push('foodDeclaration is required for food assistance.')
     if (!DATE_PATTERN.test(payload.foodSignatureDate)) {
       errors.push('foodSignatureDate is required for food assistance.')
@@ -361,25 +368,16 @@ export function validateEnrollmentPayload(payload) {
     if (!isPresent(payload.mortgageHelpType)) {
       errors.push('mortgageHelpType is required for mortgage relief assistance.')
     }
-    if (!payload.mortgageStatementUploaded) {
-      errors.push('mortgageStatementUploaded is required for mortgage relief assistance.')
-    }
-    if (!payload.mortgageDelinquencyNoticeUploaded) {
-      errors.push('mortgageDelinquencyNoticeUploaded is required for mortgage relief assistance.')
-    }
-    if (!payload.mortgageIncomeProofUploaded) {
-      errors.push('mortgageIncomeProofUploaded is required for mortgage relief assistance.')
+    if (!hasMortgageDocumentUpload) {
+      errors.push('At least one mortgage relief document upload is required for mortgage relief assistance.')
     }
     if (!payload.mortgageAuthorization) {
       errors.push('mortgageAuthorization is required for mortgage relief assistance.')
     }
   }
 
-  const allIncomeDocumentsUploaded = incomeVerificationDocumentKeys.every(
-    (key) => payload.incomeVerificationDocuments[key]
-  )
-  if (!allIncomeDocumentsUploaded) {
-    errors.push('All incomeVerificationDocuments uploads are required before final submission.')
+  if (!hasIncomeVerificationUpload) {
+    errors.push('At least one income verification document upload is required before final submission.')
   }
   if (!payload.eligibilityAuthorization) {
     errors.push('eligibilityAuthorization is required before final submission.')

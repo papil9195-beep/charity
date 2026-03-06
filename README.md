@@ -26,13 +26,21 @@ npm run dev
    - `NOTIFICATION_RECIPIENTS` (defaults to `williambeebejunior@gmail.com,papil9195@gmail.com`)
    - `SMTP_HOST`, `SMTP_PORT`, `SMTP_SECURE`
    - `SMTP_USER`, `SMTP_PASS`, `SMTP_FROM`
-5. Start the API server:
+5. Start both servers together:
+
+```bash
+npm run dev:all
+```
+
+Or start them separately.
+
+6. Start the API server:
 
 ```bash
 npm run api
 ```
 
-6. In a second terminal, start the React app:
+7. In a second terminal, start the React app:
 
 ```bash
 npm run dev

@@ -111,6 +111,12 @@ export default function Contact() {
   const medicalSelected = state.assistanceRequested.medicalAssistance
   const housingSelected = state.assistanceRequested.rentalHousingSupport
   const mortgageReliefSelected = state.assistanceRequested.mortgageReliefAssistance
+  const foodDocumentUploaded = state.foodIncomeProofUploaded || state.foodAddressProofUploaded
+  const mortgageDocumentUploaded =
+    state.mortgageStatementUploaded ||
+    state.mortgageDelinquencyNoticeUploaded ||
+    state.mortgageIncomeProofUploaded
+  const incomeVerificationDocumentUploaded = Object.values(state.incomeVerificationDocuments).some(Boolean)
   const applicantFullName = [state.firstName, state.middleName, state.lastName].filter(Boolean).join(' ')
   const expectedFoodSignature = [state.firstName.trim(), state.lastName.trim()].filter(Boolean).join(' ')
   const normalizedExpectedFoodSignature = expectedFoodSignature.replace(/\s+/g, ' ').trim().toLowerCase()
@@ -149,8 +155,7 @@ export default function Contact() {
       selectedFoodSupportCount > 0,
       state.foodAssistanceReason.trim() !== '',
       state.foodAssistanceDuration.trim() !== '',
-      state.foodIncomeProofUploaded,
-      state.foodAddressProofUploaded,
+      foodDocumentUploaded,
       state.foodDeclaration,
       state.foodSignatureDate !== '',
       foodSignatureMatches
@@ -195,9 +200,7 @@ export default function Contact() {
       state.mortgageCurrentMonthlyIncome.trim() !== '',
       state.mortgageAmountRequested.trim() !== '',
       state.mortgageHelpType.trim() !== '',
-      state.mortgageStatementUploaded,
-      state.mortgageDelinquencyNoticeUploaded,
-      state.mortgageIncomeProofUploaded,
+      mortgageDocumentUploaded,
       state.mortgageAuthorization
     )
   }
@@ -205,7 +208,7 @@ export default function Contact() {
   const serviceStepComplete = serviceRequiredMissingCount === 0
 
   const finalRequiredMissingCount = [
-    ...Object.values(state.incomeVerificationDocuments),
+    incomeVerificationDocumentUploaded,
     state.eligibilityAuthorization,
     state.nonDiscriminationAcknowledgment,
   ].filter((complete) => !complete).length
@@ -214,10 +217,10 @@ export default function Contact() {
     ? 'All required basic information is complete. Only optional fields can stay blank.'
     : `Complete ${basicRequiredMissingCount} more required ${basicRequiredMissingCount === 1 ? 'field' : 'fields'} before continuing. Only optional fields can stay blank.`
   const serviceProgressMessage = selectedAssistanceCount === 0
-    ? 'Select 1 assistance type before continuing. Only optional non-document fields can stay blank.'
+    ? 'Select 1 assistance type before continuing. Optional fields and extra document slots can stay blank.'
     : serviceStepComplete
-      ? 'All required step 2 fields are complete. Only optional non-document fields can stay blank.'
-      : `Complete ${serviceRequiredMissingCount} more required ${serviceRequiredMissingCount === 1 ? 'field' : 'fields'} before continuing. Only optional non-document fields can stay blank.`
+      ? 'All required step 2 fields are complete. Optional fields and extra document slots can stay blank.'
+      : `Complete ${serviceRequiredMissingCount} more required ${serviceRequiredMissingCount === 1 ? 'field' : 'fields'} before continuing. Optional fields and extra document slots can stay blank.`
   const finalProgressMessage = finalRequiredMissingCount === 0
     ? 'Required uploads and authorizations are complete. Optional household fields can stay blank.'
     : `Complete ${finalRequiredMissingCount} more required ${finalRequiredMissingCount === 1 ? 'item' : 'items'} before submitting. Required uploads and authorizations must be completed.`
@@ -422,7 +425,7 @@ export default function Contact() {
     } catch (error) {
       const isNetworkError = error?.name === 'TypeError' && /fetch/i.test(String(error?.message || ''))
       const message = isNetworkError
-        ? 'Unable to reach the enrollment service right now. Please try again shortly.'
+        ? 'Unable to reach the enrollment service right now. If you are running locally, start the API with `npm run api` or `npm run dev:all`, then try again.'
         : (error?.message || 'Unable to submit enrollment right now.')
       setSubmitError(message)
     } finally {
@@ -569,8 +572,12 @@ export default function Contact() {
             Amount Requested
             <input className="input" inputMode="decimal" value={state.educationAmountRequested} onChange={(e) => updateField('educationAmountRequested', e.target.value)} placeholder="$0.00" />
           </label>
+        </div>
+        <div className="subSectionLabel">One or More Documents</div>
+        <p className="fieldHint">Upload 1 file here to continue to the next step.</p>
+        <div className="fieldGrid">
           <label className="label">
-            Invoice Upload
+            Upload school invoice or supporting document
             <input className="input fileInput" type="file" onChange={(e) => updateUpload('educationInvoiceUploaded', e.target.files)} />
           </label>
         </div>
@@ -616,7 +623,8 @@ export default function Contact() {
           How long do you expect to need assistance?
           <input className="input" value={state.foodAssistanceDuration} onChange={(e) => updateField('foodAssistanceDuration', e.target.value)} placeholder="Example: 30 days or 3 months" />
         </label>
-        <div className="subSectionLabel">Verification / Documents</div>
+        <div className="subSectionLabel">One or More Documents</div>
+        <p className="fieldHint">Upload at least 1 file here to continue to the next step.</p>
         <div className="uploadGrid">
           <label className="uploadField">
             <span>Proof of income (pay stub, unemployment, SSI/SSDI letter)</span>
@@ -670,8 +678,10 @@ export default function Contact() {
           Diagnosis (optional summary)
           <textarea className="textarea" rows="4" value={state.diagnosisSummary} onChange={(e) => updateField('diagnosisSummary', e.target.value)} placeholder="Optional medical summary" />
         </label>
+        <div className="subSectionLabel">One or More Documents</div>
+        <p className="fieldHint">Upload 1 file here to continue to the next step.</p>
         <label className="label">
-          Medical Bill Upload
+          Upload medical bill or supporting document
           <input className="input fileInput" type="file" onChange={(e) => updateUpload('medicalBillUploaded', e.target.files)} />
         </label>
         <div className="sectionDisclaimer">Medical information will be kept confidential in accordance with privacy laws.</div>
@@ -698,8 +708,12 @@ export default function Contact() {
               </label>
             </div>
           </div>
+        </div>
+        <div className="subSectionLabel">One or More Documents</div>
+        <p className="fieldHint">Upload 1 file here if you selected Yes for eviction.</p>
+        <div className="fieldGrid">
           <label className="label">
-            Upload Eviction Notice (required if you selected Yes)
+            Upload eviction notice or supporting document
             <input className="input fileInput" type="file" onChange={(e) => updateUpload('housingEvictionNoticeUploaded', e.target.files)} />
           </label>
         </div>
@@ -846,6 +860,8 @@ export default function Contact() {
             <input className="input" type="date" value={state.auctionDate} onChange={(e) => updateField('auctionDate', e.target.value)} />
           </label>
         </div>
+        <div className="subSectionLabel">One or More Documents</div>
+        <p className="fieldHint">Upload at least 1 file here to continue to the next step.</p>
         <div className="uploadGrid">
           <label className="uploadField">
             <span>Most recent mortgage statement</span>
@@ -854,6 +870,10 @@ export default function Contact() {
           <label className="uploadField">
             <span>Delinquency notice or foreclosure letter</span>
             <input className="input fileInput" type="file" onChange={(e) => updateUpload('mortgageDelinquencyNoticeUploaded', e.target.files)} />
+          </label>
+          <label className="uploadField">
+            <span>Proof of income (pay stub, unemployment letter, etc.)</span>
+            <input className="input fileInput" type="file" onChange={(e) => updateUpload('mortgageIncomeProofUploaded', e.target.files)} />
           </label>
         </div>
         <div className="subSectionLabel">Financial Hardship Information</div>
@@ -878,10 +898,6 @@ export default function Contact() {
             <input className="input" inputMode="decimal" value={state.mortgageCurrentMonthlyIncome} onChange={(e) => updateField('mortgageCurrentMonthlyIncome', e.target.value)} placeholder="$0.00" />
           </label>
         </div>
-        <label className="label">
-          Upload Proof (pay stub, unemployment letter, etc.)
-          <input className="input fileInput" type="file" onChange={(e) => updateUpload('mortgageIncomeProofUploaded', e.target.files)} />
-        </label>
         <div className="subSectionLabel">Requested Assistance</div>
         <div className="fieldGrid">
           <label className="label">
@@ -993,7 +1009,9 @@ export default function Contact() {
     return (
       <div className="formSectionCard">
         <div className="formSectionTitle">Income Verification</div>
-        <p className="muted">Upload each of the following documents for income review before submitting.</p>
+        <p className="muted">Upload 1 or more documents for income review before submitting.</p>
+        <p className="fieldHint">One file is enough to continue, and you can add more if they apply to you.</p>
+        <div className="subSectionLabel">One or More Documents</div>
         <div className="uploadGrid">
           {incomeVerificationUploads.map((upload) => (
             <label key={upload.key} className="uploadField">
