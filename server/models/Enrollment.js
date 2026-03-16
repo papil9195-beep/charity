@@ -7,10 +7,6 @@ const enrollmentSchema = new mongoose.Schema(
     lastName: { type: String, required: true, trim: true },
     email: { type: String, required: true, trim: true, lowercase: true, index: true },
     payload: { type: mongoose.Schema.Types.Mixed, required: true },
-    requestMeta: {
-      ipAddress: { type: String, default: '' },
-      userAgent: { type: String, default: '' },
-    },
     uploadedFiles: {
       type: [
         new mongoose.Schema(

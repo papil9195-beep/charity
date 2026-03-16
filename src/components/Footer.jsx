@@ -16,7 +16,8 @@ export default function Footer() {
 
           <p className="footerNote">
             This website provides general information about support services and safeguarding. If someone may be in
-            immediate danger, contact emergency services or a qualified local support organization.
+            immediate danger, contact emergency services or a qualified local support organization. The site does not
+            use ad pixels, analytics scripts, or client-side tracking storage.
           </p>
         </div>
 

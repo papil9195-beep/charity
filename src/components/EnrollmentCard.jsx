@@ -34,22 +34,14 @@ export default function EnrollmentCard() {
     e.preventDefault()
     if (!canStartEnrollment) return
 
-    const searchParams = new URLSearchParams()
-    const formEntries = [
-      ['firstName', form.firstName.trim()],
-      ['middleName', form.middleName.trim()],
-      ['lastName', form.lastName.trim()],
-      ['email', form.email.trim()],
-    ]
-
-    formEntries.forEach(([key, value]) => {
-      if (value) {
-        searchParams.set(key, value)
-      }
+    navigate('/contact', {
+      state: {
+        firstName: form.firstName.trim(),
+        middleName: form.middleName.trim(),
+        lastName: form.lastName.trim(),
+        email: form.email.trim(),
+      },
     })
-
-    const search = searchParams.toString()
-    navigate(search ? `/contact?${search}` : '/contact')
   }
 
   return (
@@ -67,6 +59,13 @@ export default function EnrollmentCard() {
       <p className="enrollLead">
         Enter your name and email here, then continue to the Basic Information form to finish the required details.
       </p>
+      <div className="miniCard" aria-label="United States only notice">
+        <div className="miniTitle">U.S. Applicants Only</div>
+        <div className="muted">
+          Enrollment is currently limited to applicants living in the United States, using a valid U.S. address,
+          ZIP Code, and other required U.S. eligibility details.
+        </div>
+      </div>
 
       <form className="form" onSubmit={onSubmit}>
         <div className="fieldGrid3">

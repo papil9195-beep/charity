@@ -115,12 +115,15 @@ export default function Layout() {
 
 function ThemeToggle({ className = '' }) {
   const [mode, setMode] = React.useState(() => {
-    return localStorage.getItem('ea_theme') || 'light'
+    if (typeof window !== 'undefined' && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      return 'dark'
+    }
+
+    return 'light'
   })
 
   React.useEffect(() => {
     document.documentElement.dataset.theme = mode
-    localStorage.setItem('ea_theme', mode)
   }, [mode])
 
   return (

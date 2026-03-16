@@ -30,6 +30,12 @@ let mailTransport = null
 export default async function handler(req, res) {
   res.setHeader('Cache-Control', 'no-store')
   res.setHeader('Allow', 'POST, OPTIONS')
+  res.setHeader('Referrer-Policy', 'no-referrer')
+  res.setHeader(
+    'Permissions-Policy',
+    'accelerometer=(), autoplay=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()'
+  )
+  res.setHeader('X-Robots-Tag', 'noindex, nofollow, noarchive')
 
   if (req.method === 'OPTIONS') {
     return res.status(204).end()
@@ -84,12 +90,7 @@ export default async function handler(req, res) {
       from: getSmtpFrom(),
       to: recipients,
       subject: buildEmailSubject(payload),
-      text: buildSubmissionText({
-        payload,
-        uploadedFiles,
-        sourceIp: req.headers['x-forwarded-for'] || req.socket?.remoteAddress || '',
-        userAgent: req.headers['user-agent'] || '',
-      }),
+      text: buildSubmissionText({ payload, uploadedFiles }),
       attachments: Object.entries(uploadedFiles).map(([, file]) => ({
         filename: file.originalname || 'upload',
         content: file.buffer,
@@ -185,15 +186,13 @@ function buildEmailSubject(payload) {
   return applicantName ? `New Enrollment Submission - ${applicantName}` : 'New Enrollment Submission'
 }
 
-function buildSubmissionText({ payload, uploadedFiles, sourceIp, userAgent }) {
+function buildSubmissionText({ payload, uploadedFiles }) {
   const lines = []
   const selectedAssistanceKeys = getSelectedOptionKeys(payload.assistanceRequested)
   const selectedAssistanceLabels = selectedAssistanceKeys.map((key) => ASSISTANCE_OPTION_LABELS[key] || toReadableLabel(key))
 
   lines.push('A new enrollment submission was received.')
   lines.push('')
-  lines.push(`Source IP: ${String(sourceIp || 'N/A')}`)
-  lines.push(`User Agent: ${String(userAgent || 'N/A')}`)
   lines.push(`Attached Files: ${Object.keys(uploadedFiles).length}`)
   lines.push('')
 

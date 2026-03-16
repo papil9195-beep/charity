@@ -2,14 +2,17 @@ export function sanitizePrefillName(value) {
   return value.replace(/[^A-Za-z\s'-]/g, '').replace(/\s{2,}/g, ' ').trim()
 }
 
-export function getPrefilledBasicInfo(search) {
-  const params = new URLSearchParams(search)
+export function getPrefilledBasicInfo(locationState) {
+  const source =
+    locationState && typeof locationState === 'object' && !Array.isArray(locationState)
+      ? locationState
+      : {}
 
   return {
-    firstName: sanitizePrefillName(params.get('firstName') || ''),
-    middleName: sanitizePrefillName(params.get('middleName') || ''),
-    lastName: sanitizePrefillName(params.get('lastName') || ''),
-    email: (params.get('email') || '').trim(),
+    firstName: sanitizePrefillName(String(source.firstName || '')),
+    middleName: sanitizePrefillName(String(source.middleName || '')),
+    lastName: sanitizePrefillName(String(source.lastName || '')),
+    email: String(source.email || '').trim(),
   }
 }
 

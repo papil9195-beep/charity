@@ -59,7 +59,7 @@ const incomeVerificationUploadFields = incomeVerificationUploads.map((upload) =>
 export default function Contact() {
   const location = useLocation()
   const [state, setState] = React.useState(() => {
-    const prefilled = getPrefilledBasicInfo(location.search)
+    const prefilled = getPrefilledBasicInfo(location.state)
 
     return {
       firstName: prefilled.firstName, middleName: prefilled.middleName, lastName: prefilled.lastName, ssn: '', dateOfBirth: '', phoneNumber: '', email: prefilled.email,
@@ -1100,6 +1100,13 @@ export default function Contact() {
           <p className="muted">
             Follow the three-step process to complete your basic intake, choose the right assistance, and finish the income review.
           </p>
+          <div className="miniCard" aria-label="United States only notice">
+            <div className="miniTitle">U.S. Eligibility</div>
+            <div className="muted">
+              This enrollment form is currently limited to applicants in the United States and uses U.S.-specific
+              eligibility fields such as SSN, state, and ZIP Code.
+            </div>
+          </div>
         </header>
 
         <div className="enrollRequestLayout">

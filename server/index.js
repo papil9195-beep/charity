@@ -120,8 +120,28 @@ app.use(
   helmet({
     contentSecurityPolicy: false,
     crossOriginEmbedderPolicy: false,
+    referrerPolicy: { policy: 'no-referrer' },
+    permissionsPolicy: {
+      features: {
+        accelerometer: [],
+        autoplay: [],
+        camera: [],
+        geolocation: [],
+        gyroscope: [],
+        magnetometer: [],
+        microphone: [],
+        payment: [],
+        usb: [],
+      },
+    },
   })
 )
+app.use('/api', (_req, res, next) => {
+  res.setHeader('Cache-Control', 'no-store, max-age=0')
+  res.setHeader('Pragma', 'no-cache')
+  res.setHeader('X-Robots-Tag', 'noindex, nofollow, noarchive')
+  next()
+})
 app.use(express.json({ limit: '2mb' }))
 
 app.get('/api/health', (_req, res) => {
@@ -244,7 +264,6 @@ app.post('/api/enrollments', enrollmentRateLimiter, parseEnrollmentUpload, async
   }
 
   const storedPayload = redactSensitiveEnrollmentPayload(payload)
-  const sourceIp = req.ip || ''
 
   let storedFiles = []
 
@@ -264,10 +283,6 @@ app.post('/api/enrollments', enrollmentRateLimiter, parseEnrollmentUpload, async
       lastName: payload.lastName,
       email: payload.email,
       payload: storedPayload,
-      requestMeta: {
-        ipAddress: sourceIp,
-        userAgent: req.get('user-agent') || '',
-      },
       uploadedFiles: storedFiles,
     })
 
@@ -275,8 +290,6 @@ app.post('/api/enrollments', enrollmentRateLimiter, parseEnrollmentUpload, async
       enrollmentId: enrollment._id.toString(),
       payload,
       uploadedFiles,
-      sourceIp,
-      userAgent: req.get('user-agent') || '',
     })
 
     return res.status(201).json({
@@ -650,8 +663,6 @@ async function sendEnrollmentNotification({
   enrollmentId,
   payload,
   uploadedFiles,
-  sourceIp,
-  userAgent,
 }) {
   const compactPayload = compactNotificationPayload(payload) || {}
 
@@ -669,8 +680,6 @@ async function sendEnrollmentNotification({
     `Enrollment ID: ${enrollmentId}`,
     `Applicant: ${applicantName || 'N/A'}`,
     `Email: ${payload.email || 'N/A'}`,
-    `Source IP: ${sourceIp || 'N/A'}`,
-    `User Agent: ${userAgent || 'N/A'}`,
     `Attached Files: ${Object.keys(uploadedFiles).length}`,
     '',
     ...emailBodyLines,
